@@ -1,0 +1,103 @@
+#SQL HEALTCARE PROJECT on patients with heartdisease.
+  
+
+#1. Find the percentage of people with heart disease in each AgeCategory and Sex. Group the results by AgeCategory and Sex.
+
+SELECT agecategory, sex,
+ROUND(100.0 * SUM(CASE WHEN heartdisease = 'Yes' THEN 1 ELSE 0 END) / COUNT(*), 2) AS percentage_with_disease
+FROM heart2020cleanedV2
+group by agecategory, sex
+ORDER BY agecategory desc;
+
+modified ans below by adding alcohol drinking 
+
+SELECT  agecategory, sex, alcoholdrinking,
+ROUND(100.0 * SUM(CASE WHEN heartdisease = 'Yes' AND alcoholdrinking = 'Yes' THEN 1 ELSE 0 END) / COUNT(*), 2) AS percentage_with_disease
+FROM heart2020cleanedV2
+group by agecategory, sex, alcoholdrinking
+ORDER BY agecategory desc;
+
+
+
+#2. Identify the average BMI for individuals who engage in physical activity versus those who do not. Include the results grouped by Sex and GenHealth.
+
+SELECT 
+    physicalactivity, 
+    sex, 
+    genhealth, 
+    AVG(bmi) AS AverageBMI
+FROM 
+   heart2020cleanedV2
+GROUP BY physicalactivity, sex, genhealth;
+
+modified ans below by adding where clause finding ans whose general health = FAIR
+
+SELECT 
+    physicalactivity, 
+    sex, 
+    genhealth, 
+    AVG(bmi) AS AverageBMI
+FROM heart2020cleanedV2
+where genhealth = 'Fair'
+GROUP BY physicalactivity, sex, genhealth;
+
+
+
+#3. Determine the sum of patients who have heart disease and patients who smoke, also give avg of physical health, mental health, sleep time and  Group the results by AgeCategory and sex.
+
+SELECT agecategory, sex,
+SUM(CASE WHEN smoking = 'Yes' THEN 0 ELSE 1 END) AS smokers,
+SUM(CASE WHEN heartdisease = 'Yes' THEN 0 ELSE 1 END) AS heart_patient,
+AVG(physicalhealth) AS 	avg_physic,
+AVG(mentalhealth) AS avg_mind,
+AVG(sleeptime) AS sleepers
+FROM heart2020cleanedV2
+GROUP by agecategory, sex
+order by agecategory asc;
+
+
+#4. Analyze the relationship between Smoking, AlcoholDrinking, and GenHealth. Identify if there is a significant difference in general health between smokers and non-smokers, drinkers, and non-drinkers.
+
+SELECT 
+    smoking,
+    alcoholdrinking,
+    AVG(CASE 
+        WHEN genhealth = 'Excellent' THEN 5
+        WHEN genhealth = 'Very good' THEN 4
+        WHEN genhealth = 'Good' THEN 3
+        WHEN genhealth = 'Fair' THEN 2
+        WHEN genhealth = 'Poor' THEN 1
+        ELSE NULL
+    END) AS avg_genhealth
+FROM 
+    heart2020cleanedV2
+GROUP BY 
+    smoking,
+    alcoholdrinking
+ORDER BY 
+    smoking,
+    alcoholdrinking;
+
+
+#5. Investigate whether individuals with asthma are less likely to engage in physical activity. Compare this across different AgeCategory and Sex.  
+
+SELECT agecategory, sex, physicalactivity,
+    SUM(CASE WHEN asthma = 'Yes' THEN 1 ELSE 0 END) as asthma_patient
+    FROM heart2020cleanedV2
+    group by agecategory, sex, physicalactivity
+    ORDER BY asthma_patient DESC;
+
+
+#6. Find the PATEINT COUNT of chronic conditions such as Diabetic, KidneyDisease, and SkinCancer among different races. Group the results by Race and GenHealth.
+
+  SELECT race, genhealth,
+  SUM(CASE WHEN diabetic = 'Yes' THEN 0 ELSE 1 END) AS number_of_diabetic,
+  SUM(CASE WHEN kidneydisease = 'Yes' THEN 0 ELSE 1 END) AS number_of_kid_disease,
+   SUM(CASE WHEN skincancer = 'Yes' THEN 0 ELSE 1 END) AS number_of_skin_cancer
+    from heart2020cleanedV2
+    GROUP by race, genhealth
+    order by genhealth;
+
+
+
+
