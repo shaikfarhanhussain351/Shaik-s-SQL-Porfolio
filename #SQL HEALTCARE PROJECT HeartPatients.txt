@@ -1,4 +1,4 @@
-#SQL HEALTCARE PROJECT on patients with heartdisease.
+#SQL HEALTHCARE PROJECT on patients with heartdisease.
   
 
 #1. Find the percentage of people with heart disease in each AgeCategory and Sex. Group the results by AgeCategory and Sex.
